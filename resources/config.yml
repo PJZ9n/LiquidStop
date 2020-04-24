@@ -1,0 +1,7 @@
+# LiquidStop 構成ファイル
+
+# 水の流れを停止するか
+stop-water: true
+
+# 溶岩の流れを停止するか
+stop-lava: true

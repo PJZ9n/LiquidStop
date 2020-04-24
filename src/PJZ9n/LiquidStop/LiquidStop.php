@@ -23,11 +23,49 @@ declare(strict_types=1);
 
 namespace PJZ9n\LiquidStop;
 
+use Particle\Validator\Failure;
+use Particle\Validator\Validator;
+use pocketmine\block\BlockFactory;
+use pocketmine\block\Lava;
+use pocketmine\block\Water;
 use pocketmine\plugin\PluginBase;
+use RuntimeException;
+
+require_once __DIR__ . "/../../../vendor/autoload.php";
 
 class LiquidStop extends PluginBase
 {
     
-    //
-    
+    public function onEnable(): void
+    {
+        $this->saveDefaultConfig();
+        
+        $validator = new Validator();
+        $validator->required("stop-water")->bool();
+        $validator->required("stop-lava")->bool();
+        $validateResult = $validator->validate($this->getConfig()->getAll());
+        if ($validateResult->isNotValid()) {
+            $messages = array_map(function (Failure $failure): string {
+                return $failure->format();
+            }, $validateResult->getFailures());
+            throw new RuntimeException("Invalid configuration file: " . implode($messages, " | "));
+        }
+        
+        if ($this->getConfig()->get("stop-water")) {
+            BlockFactory::registerBlock(new class () extends Water {
+                public function onScheduledUpdate(): void
+                {
+                    //Stop
+                }
+            }, true);
+        }
+        if ($this->getConfig()->get("stop-lava")) {
+            BlockFactory::registerBlock(new class() extends Lava {
+                public function onScheduledUpdate(): void
+                {
+                    //Stop
+                }
+            }, true);
+        }
+    }
 }
