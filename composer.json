@@ -1,0 +1,7 @@
+{
+    "name": "pjz9n/liquid-stop",
+    "require": {
+        "particle/validator": "^2.3"
+    },
+    "license": "GPL-v3"
+}
